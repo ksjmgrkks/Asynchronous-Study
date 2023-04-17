@@ -3,25 +3,50 @@ package com.kks.asynchronous.study.coroutines
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
-    doCount()
+    doOneTwoThree()
+    println("runBlocking: ${Thread.currentThread().name}")
+    println("5!")
+
+    val result = withTimeoutOrNull(10000L){ // 10초 이상 걸리면 강제로 취소
+        doCount()
+    } ?: false // 실패시 false
+    println(result)
 }
 
 suspend fun doOneTwoThree() = coroutineScope {
     val job1 = launch {
-        println("launch1: ${Thread.currentThread().name}")
-        delay(1000L) //suspension point
-        println("3!")
+        try {
+            println("launch1: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("3!")
+        } finally {
+            // 파일, 소켓, DB 등을 close 해주는 코드를 보통 작성함
+            println("job1 is finishing!")
+        }
+
+        withContext(NonCancellable){
+            //반드시 실행되어야하는 Cancel 되어서는 안되는 코드 작성
+        }
     }
 
     val job2 = launch {
-        println("launch2: ${Thread.currentThread().name}")
-        println("1!")
+        try {
+            println("launch2: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("1!")
+        } finally {
+            println("job2 is finishing!")
+        }
     }
 
     val job3 = launch {
-        println("launch3: ${Thread.currentThread().name}")
-        delay(500L)
-        println("2!")
+        try {
+            println("launch3: ${Thread.currentThread().name}")
+            delay(1000L)
+            println("2!")
+        } finally {
+            println("job3 is finishing!")
+        }
     }
 
     delay(800L)
