@@ -34,7 +34,7 @@ fun main() = runBlocking<Unit> {
     }
 
     async {
-        println("부모의 콘텍스트 / ${Thread.currentThread().name}")
+        println("부모의 Context / ${Thread.currentThread().name}")
     }
 
     async(Dispatchers.Default) {
