@@ -18,33 +18,43 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class RxActivity : AppCompatActivity() {
     private val scopeProvider by lazy { AndroidLifecycleScopeProvider.from(this) }
     private val db by lazy { AppDatabase.getInstance(this) }
-    private var adapter: MyAdapter? = null
+    private var adapter = MyAdapter { user ->
+        db.userDao().delete(user)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDispose(scopeProvider)
+            .subscribe({
+                Toast.makeText(this, "${user.name}(이)가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            }, { error ->
+                // 에러 처리 로직
+                Log.e("[kks]", "delete user Error occurred: ${error.message}")
+            })
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityRxBinding = DataBindingUtil.setContentView(this, R.layout.activity_rx)
+        binding.recyclerView.adapter = adapter
 
         db.userDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .autoDispose(scopeProvider)
             .subscribe({
-                adapter = MyAdapter(it.toMutableList())
-                binding.recyclerView.adapter = adapter
+                adapter.getAllUser(it.toMutableList())
             }, { error ->
                 // 에러 처리 로직
                 Log.e("[kks]", "userDao() Error occurred: ${error.message}")
             })
 
-        // 버튼 클릭 이벤트 처리
+        // 추가 버튼 클릭 이벤트 처리
         binding.button.setOnClickListener {
             db.userDao().insertAll(User(name = binding.editText.text.toString()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .autoDispose(scopeProvider)
                 .subscribe({
-                    val result = adapter?.addItem(User(name = binding.editText.text.toString()))
-                    if(result != null)
-                        Toast.makeText(this, "${binding.editText.text}(이)가 추가되었습니다.", Toast.LENGTH_SHORT).show()
+                    adapter.addItem(User(name = binding.editText.text.toString()))
+                    Toast.makeText(this, "${binding.editText.text}(이)가 추가되었습니다.", Toast.LENGTH_SHORT).show()
                 }, { error ->
                     Log.e("[kks]", "add User Error occurred: ${error.message}")
                 })
