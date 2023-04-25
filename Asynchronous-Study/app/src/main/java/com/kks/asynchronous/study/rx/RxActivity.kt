@@ -42,8 +42,9 @@ class RxActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .autoDispose(scopeProvider)
                 .subscribe({
-                    adapter?.addItem(User(name = binding.editText.text.toString()))
-                    Toast.makeText(this, "${binding.editText.text}(이)가 추가되었습니다.", Toast.LENGTH_SHORT).show()
+                    val result = adapter?.addItem(User(name = binding.editText.text.toString()))
+                    if(result != null)
+                        Toast.makeText(this, "${binding.editText.text}(이)가 추가되었습니다.", Toast.LENGTH_SHORT).show()
                 }, { error ->
                     Log.e("[kks]", "add User Error occurred: ${error.message}")
                 })
