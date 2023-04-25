@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -43,10 +44,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 
     //rxjava3
     implementation "io.reactivex.rxjava3:rxjava:3.1.6"
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.2"
+
     //rxbinding
     implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding-core:4.0.0'
@@ -64,6 +67,16 @@ dependencies {
     implementation 'com.uber.autodispose2:autodispose:2.1.1'
     implementation 'com.uber.autodispose2:autodispose-android:2.1.1'
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
+
+    implementation "androidx.room:room-runtime:2.5.1"
+    annotationProcessor "androidx.room:room-compiler:2.5.1"
+
+    // To use Kotlin Symbol Processing (KSP)
+    ksp "androidx.room:room-compiler:2.5.1"
+    // optional - RxJava3 support for Room
+    implementation "androidx.room:room-rxjava3:2.5.1"
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:2.5.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
