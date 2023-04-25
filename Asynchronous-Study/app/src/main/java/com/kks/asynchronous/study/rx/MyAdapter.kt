@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kks.asynchronous.study.databinding.ItemListBinding
 import com.kks.asynchronous.study.rx.room.User
 
-class MyAdapter : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    private val userList: MutableList<User> = mutableListOf()
+class MyAdapter(private var userList: MutableList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
@@ -21,13 +21,6 @@ class MyAdapter : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
     override fun getItemCount(): Int {
         return userList.size
     }
-
-    fun getAllUser(allUserList: List<User>) {
-        val previousSize = userList.size
-        userList.addAll(allUserList)
-        notifyItemRangeInserted(previousSize, allUserList.size)
-    }
-
 
     fun addItem(item: User) {
         userList.add(item)

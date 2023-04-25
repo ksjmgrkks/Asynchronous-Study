@@ -5,12 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
-    fun getAll(): Observable<List<User>>
+    fun getAll(): Single<List<User>>
 
     @Insert
     fun insertAll(vararg users: User) : Completable
